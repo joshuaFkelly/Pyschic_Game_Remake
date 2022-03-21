@@ -51,33 +51,72 @@ class Game {
   decrementGuessesLeft() {
     return this.guessesLeft--;
   }
+
+  gameOver() {
+    document.removeEventListener("keyup", listenForLetterToBeGuessed);
+    // this.gameOverModal();
+    console.log(this.gameOverModal());
+  }
+
+  gameOverModal() {
+    return `
+    <h1>Game Over</h1>
+   <h4> You are out guesses! </h4>
+   <h2> Wins: ${this.wins} Losses: ${this.losses} </h2>
+   <button id = "startOver"> New Game </button>
+   <button id = "quit"> Quit </button>
+   `;
+  }
 }
 
-const newGame = new Game(0, 0, 10, []);
 const guessesSoFarEl = document.getElementById("guessesSoFar");
 const guessesLeftEl = document.getElementById("guessesLeft");
 const letterToGuessEl = document.getElementById("letterToGuess");
-const letterToBeGuessed = newGame.getRandomLetterToBeGuessed();
 const winsEl = document.getElementById("wins");
 const lossesEl = document.getElementById("losses");
+const startBtn = document.getElementById("start");
+const newGame = new Game(0, 0, 10, []);
+let letterToBeGuessed;
 
-document.addEventListener("keyup", (e) => {
+startBtn.addEventListener("click", () => {
+  letterToBeGuessed = newGame.getRandomLetterToBeGuessed();
+  console.log(letterToBeGuessed);
+  newGame.displayGame();
+});
+const listenForLetterToBeGuessed = (e) => {
+  console.log(letterToBeGuessed);
   if (e.key === letterToBeGuessed) {
     newGame.incrementWins();
     winsEl.innerText = newGame.wins;
+    letterToBeGuessed = newGame.getRandomLetterToBeGuessed();
+    console.log(letterToBeGuessed);
+    newGame.guessesLeft = 10;
+    guessesLeftEl.innerText = newGame.guessesLeft;
+    newGame.guessesSoFar = [];
+    guessesSoFarEl.innerText = newGame.guessesSoFar;
   } else {
     newGame.decrementGuessesLeft();
     guessesLeftEl.innerText = newGame.guessesLeft;
 
-    newGame.guessesSoFar.push(e.key);
+    newGame.guessesSoFar.push(e.key.toUpperCase());
     guessesSoFarEl.innerText = newGame.guessesSoFar.join(" ");
   }
-});
 
-console.log(letterToBeGuessed);
-const startBtn = document.getElementById("start");
+  if (newGame.guessesLeft === 0) {
+    newGame.incrementLosses();
+    lossesEl.innerText = newGame.losses;
 
-startBtn.addEventListener("click", () => {
-  newGame.getRandomLetterToBeGuessed();
-  newGame.displayGame();
-});
+    letterToBeGuessed = newGame.getRandomLetterToBeGuessed();
+    console.log(letterToBeGuessed);
+    newGame.guessesLeft = 10;
+    guessesLeftEl.innerText = newGame.guessesLeft;
+
+    newGame.guessesSoFar = [];
+    guessesSoFarEl.innerText = newGame.guessesSoFar;
+  }
+  if (newGame.losses === 5) {
+    newGame.gameOver();
+  }
+};
+
+document.addEventListener("keyup", listenForLetterToBeGuessed);
