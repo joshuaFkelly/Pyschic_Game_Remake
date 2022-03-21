@@ -1,20 +1,4 @@
-// this js file will hold our main game logic
-// each Game should have the following props:
-// letterToBeGuessed, wins, losses, guessesLeft, guessesSoFar
-
-// user clicks start button
-// new game is displayed to dom
-// user can click keys to guess letter
-// every wrong guess decrements guessesLeft and push guess to guessesSoFar
-// if guessesLeft === 0 then losses is incremenented, guessesSoFar is emptied, guessesLeft = 10, create new LetterToBeGuessed
-// if losses === 5 then game is over, gameOver template displayed, options for New Game or Quit is presented
-// new game button will generate a new Game Object.
-// quit button will display start button
-// start button will generate a new game, display new game to DOM, listen for User guesses
-
-// first step create game object
 class Game {
-  // second add properties
   constructor() {
     this.wins = 0;
     this.losses = 0;
@@ -22,9 +6,6 @@ class Game {
     this.guessesSoFar = [];
     this.letterToBeGuessed;
   }
-  // third add methods
-  // each Game should be  have the following methods:
-  // startGame, getLetterToBeGuessed, incrementWins, incrementLosses, decerementGuessesLeft, saveGuessesSoFar, newGame, quitGame
   gameLogic(e) {
     game.saveGuesses(e);
 
@@ -44,7 +25,7 @@ class Game {
     }
 
     if (game.losses === 5) {
-      console.log(game.gameOver());
+      game.gameOver();
     }
   }
 
@@ -59,9 +40,7 @@ class Game {
     document.getElementById("guessesLeft").innerText = this.guessesLeft;
     document.getElementById("guessesSoFar").innerText = this.guessesSoFar;
     this.getLetterToBeGuessed();
-    console.log(
-      `Starting New Game. First letter to be guessed: ${this.letterToBeGuessed}`
-    );
+    console.log(`letter to be guessed: ${this.letterToBeGuessed}`);
   }
 
   getLetterToBeGuessed() {
@@ -89,21 +68,27 @@ class Game {
   }
 
   quitGame() {
-    console.log("Quit Game :(");
+    document.getElementById("modal").hidden = true;
+    document.getElementById("start").hidden = false;
+    document.getElementById("main").hidden = true;
+  }
+
+  newGame() {
+    game = new Game();
+    game.startGame();
+    document.getElementById("modal").hidden = true;
   }
 
   gameOver() {
-    document.removeEventListener("keyup", this.gameLogic);
     document.getElementById("modal").innerHTML = this.gameOverModal();
+    document.getElementById("modal").hidden = false;
+    document.removeEventListener("keyup", this.gameLogic);
     document.getElementById("newGame").addEventListener("click", () => {
-      game = new Game();
-      game.startGame();
+      this.newGame();
     });
     document.getElementById("quitGame").addEventListener("click", () => {
-      console.log("Display only start button AKA home screen");
+      this.quitGame();
     });
-
-    return `Game Over! 5 Losses reached.`;
   }
 
   gameOverModal() {
@@ -130,15 +115,12 @@ class Game {
   }
 }
 
-// use event listeners to play game
-
 let game;
+document.getElementById("main").hidden = true;
 
 document.getElementById("start").addEventListener("click", () => {
   game = new Game();
   game.startGame();
-});
-
-document.getElementById("quit").addEventListener("click", () => {
-  game.gameOver();
+  document.getElementById("main").hidden = false;
+  document.getElementById("start").hidden = true;
 });
