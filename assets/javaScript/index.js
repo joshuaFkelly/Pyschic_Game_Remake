@@ -18,6 +18,7 @@ class Game {
       }
     });
   }
+
   collectGuesses(guess) {
     this.guessedLetters.push(guess);
     document.querySelector("#guessesSoFar").innerText = this.guessedLetters
@@ -51,4 +52,6 @@ class Game {
   }
 }
 
-new Game(0, 0, 10, []);
+const startGame = () => new Game(0, 0, 10, []);
+
+document.getElementById("startBtn").addEventListener("click", startGame);
