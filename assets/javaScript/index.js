@@ -55,3 +55,9 @@ class Game {
 const startGame = () => new Game(0, 0, 10, []);
 
 document.getElementById("startBtn").addEventListener("click", startGame);
+
+const quit = () => {
+
+}
+document.getElementById("quitBtn").addEventListener("click", quit);
+
