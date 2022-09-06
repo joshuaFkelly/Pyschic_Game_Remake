@@ -6,7 +6,7 @@ class Game {
     this.guessedLetters = guessedLetters;
     this.letterToBeGuessed = this.generateRandomLetter();
 
-    document.addEventListener("keyup", (e) => {
+    const rules = (e) => {
       this.collectGuesses(e.key);
       if (e.key === this.letterToBeGuessed) {
         this.manageWin();
@@ -16,7 +16,12 @@ class Game {
       if (this.guessesRemaining === 0) {
         this.manageLoss();
       }
-    });
+    }
+    document.addEventListener("keyup", rules);
+
+    document.getElementById("quitBtn").addEventListener("click", (e) => {
+      document.removeEventListener("keyup", rules)
+    })
   }
 
   collectGuesses(guess) {
@@ -52,12 +57,21 @@ class Game {
   }
 }
 
-const startGame = () => new Game(0, 0, 10, []);
+const startGame = () => {
+  let currentGame = new Game(0, 0, 10, []);
+  document.getElementById("guessesLeft").innerText = currentGame.guessesRemaining
+  document.getElementById("instructions").classList.remove("visually-hidden")
+}
 
 document.getElementById("startBtn").addEventListener("click", startGame);
 
 const quit = () => {
-
+  document.getElementById("instructions").classList.add("visually-hidden")
+  document.getElementById("guessesLeft").innerText = 0
+  document.getElementById("wins").innerText = 0
+  document.getElementById("losses").innerText = 0
+  document.getElementById("guessesSoFar").innerText = []
 }
+
 document.getElementById("quitBtn").addEventListener("click", quit);
 
